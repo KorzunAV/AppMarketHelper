@@ -45,6 +45,9 @@ namespace AppMarketHelper.PlayGoogleCom
 
         protected IEnumerable<T> TryGetValues<T>(JArray array, params int[] ids)
         {
+            if (array == null)
+                yield break;
+
             foreach (var item in array)
             {
                 if (item.Type == JTokenType.Null)

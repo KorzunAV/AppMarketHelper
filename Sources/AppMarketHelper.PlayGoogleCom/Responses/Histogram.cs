@@ -6,7 +6,15 @@ namespace AppMarketHelper.PlayGoogleCom.Responses
     [JsonObject(MemberSerialization.OptIn)]
     public class Histogram
     {
-        public long[] Marks { get; set; } = new long[5];
+        private static readonly long[] Default = new long[5];
+
+        private long[] _marks;
+
+        public long[] Marks
+        {
+            get => _marks != null && _marks.Length == 5 ? _marks : Default;
+            set => _marks = value;
+        }
 
         [JsonProperty("total")]
         public long Total => Marks.Sum();

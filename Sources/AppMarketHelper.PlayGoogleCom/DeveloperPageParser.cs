@@ -15,6 +15,8 @@ namespace AppMarketHelper.PlayGoogleCom
     public class DeveloperPageParser : BasePageParser
     {
         private const string Url = "https://play.google.com/store/apps/developer";
+        private const string Url2 = "https://play.google.com/store/apps/dev";
+        private Regex urlVersionRegex = new Regex("^[0-9]*$");
 
         private readonly HttpClient _client;
 
@@ -29,7 +31,9 @@ namespace AppMarketHelper.PlayGoogleCom
 
         public async Task<OperationResult<DevInfo>> TryParsePageAsync(DevPageGetRequest args, CancellationToken token = default(CancellationToken))
         {
-            var response = await _client.GetAsync<DevPageGetRequest, string>(Url, args, token);
+            var isv2 = urlVersionRegex.IsMatch(args.Query.Id);
+
+            var response = await _client.GetAsync<DevPageGetRequest, string>(isv2 ? Url2 : Url, args, token);
 
             if (response.IsSuccess)
             {
@@ -57,8 +61,8 @@ namespace AppMarketHelper.PlayGoogleCom
                             case "ds:3":
                             {
                                 var jArr = (JArray)jToken;
-                                var comments = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
-                                devInfo.AppIds = TryGetValues<string>(comments, 12, 0).ToArray();
+                                var apps = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
+                                devInfo.AppIds = TryGetValues<string>(apps, 12, 0).ToArray();
                                 break;
                             }
                         }
