@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMarketHelper.PlayGoogleCom", "AppMarketHelper.PlayGoogleCom\AppMarketHelper.PlayGoogleCom.csproj", "{115C64CD-E749-42DC-8B0E-1051C29AC057}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppMarketHelper.Tests", "AppMarketHelper.Tests\AppMarketHelper.Tests.csproj", "{D8752EB4-B13C-4538-8AA7-D17F712151DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{115C64CD-E749-42DC-8B0E-1051C29AC057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{115C64CD-E749-42DC-8B0E-1051C29AC057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{115C64CD-E749-42DC-8B0E-1051C29AC057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{115C64CD-E749-42DC-8B0E-1051C29AC057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8752EB4-B13C-4538-8AA7-D17F712151DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8752EB4-B13C-4538-8AA7-D17F712151DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8752EB4-B13C-4538-8AA7-D17F712151DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8752EB4-B13C-4538-8AA7-D17F712151DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4B2E2B70-2334-429B-AA95-F0EC110D6E64}
+	EndGlobalSection
+EndGlobal
