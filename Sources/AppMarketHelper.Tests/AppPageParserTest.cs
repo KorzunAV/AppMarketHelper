@@ -1,15 +1,14 @@
-﻿using System.Threading.Tasks;
-using AppMarketHelper.PlayGoogleCom;
+﻿using AppMarketHelper.PlayGoogleCom;
 using AppMarketHelper.PlayGoogleCom.Requests;
-using AppMarketHelper.PlayGoogleCom.Responses;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace AppMarketHelper.Tests
 {
     [TestFixture]
-    internal class PageParserTest : BaseTest
+    internal class AppPageParserTest : BaseTest
     {
-        private readonly PageParser _pageParser = new PageParser();
+        private readonly AppPageParser _appPageParser = new AppPageParser();
 
 
         [Test]
@@ -25,7 +24,7 @@ namespace AppMarketHelper.Tests
                     GovernmentCode = "us"
                 }
             };
-            var result = await _pageParser.TryParsePageAsync(args);
+            var result = await _appPageParser.TryParsePageAsync(args);
             Assert.IsTrue(result.IsSuccess);
             Assert.IsTrue(result.Result.Title.Length > 0);
             Assert.IsTrue(result.Result.DescriptionHTML.Length > 0);
