@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AppMarketHelper.PlayGoogleCom;
+﻿using AppMarketHelper.PlayGoogleCom;
 using AppMarketHelper.PlayGoogleCom.Requests;
 using NUnit.Framework;
 using System.Threading.Tasks;
@@ -13,7 +12,8 @@ namespace AppMarketHelper.Tests
 
 
         [Test]
-        [TestCase("Chainart")]
+        [TestCase("Google%20LLC")]
+        [TestCase("5700313618786177705")]
         public async Task ParsePageTest(string id)
         {
             var args = new DevPageGetRequest
@@ -27,7 +27,7 @@ namespace AppMarketHelper.Tests
             };
             var result = await _pageParser.TryParsePageAsync(args);
             Assert.IsTrue(result.IsSuccess);
-            Assert.IsTrue(result.Result.AppIds.Any());
+            Assert.IsTrue(result.Result.AppIds.Length >= 20);
         }
     }
 }
