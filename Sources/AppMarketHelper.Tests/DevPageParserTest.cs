@@ -27,7 +27,7 @@ namespace AppMarketHelper.Tests
             };
             var result = await _pageParser.TryParsePageAsync(args);
             Assert.IsTrue(result.IsSuccess);
-            Assert.IsTrue(result.Result.AppIds.Length >= 20);
+            Assert.IsTrue(result.Result.AppIds.Length >= 10);
         }
     }
 }

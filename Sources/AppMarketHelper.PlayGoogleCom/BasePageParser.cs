@@ -7,8 +7,7 @@ namespace AppMarketHelper.PlayGoogleCom
     public abstract class BasePageParser
     {
         protected static readonly Regex InitDataCallbackRegex = new Regex(@"AF_initDataCallback[\s\S]*?<\/script");
-        protected static readonly Regex InitDataCallbackKeyRegex = new Regex(@"'(ds:.*?)'");
-        protected static readonly Regex InitDataCallbackValueRegex = new Regex(@"return ([\s\S]*?)}}\);<\/");
+        protected static readonly Regex InitDataRegex = new Regex(@"AF_initDataCallback\((\{.*)\);</script", RegexOptions.Singleline);
         protected static readonly Regex NotNumbersRegex = new Regex(@"[^\d]");
 
 

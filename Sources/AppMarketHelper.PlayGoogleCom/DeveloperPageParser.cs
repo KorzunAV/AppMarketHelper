@@ -18,7 +18,7 @@ namespace AppMarketHelper.PlayGoogleCom
         private const string Host = "https://play.google.com";
         private const string DeveloperUrl = Host + "/store/apps/developer";
         private const string DevUrl = Host + "/store/apps/dev";
-        private Regex urlVersionRegex = new Regex("^[0-9]*$");
+        private readonly Regex _urlVersionRegex = new Regex("^[0-9]*$");
 
         private readonly HttpClient _client;
 
@@ -33,7 +33,7 @@ namespace AppMarketHelper.PlayGoogleCom
 
         public async Task<OperationResult<DevInfo>> TryParsePageAsync(DevPageGetRequest args, CancellationToken token = default(CancellationToken))
         {
-            var isv2 = urlVersionRegex.IsMatch(args.Query.Id);
+            var isv2 = _urlVersionRegex.IsMatch(args.Query.Id);
 
             var response = await _client.GetAsync<DevPageGetRequest, string>(isv2 ? DevUrl : DeveloperUrl, args, token).ConfigureAwait(true);
 
@@ -49,36 +49,35 @@ namespace AppMarketHelper.PlayGoogleCom
 
                 foreach (Match match in matches)
                 {
-                    var dsId = InitDataCallbackKeyRegex.Match(match.Value);
-                    var dsValues = InitDataCallbackValueRegex.Match(match.Value);
+                    var jsonData = InitDataRegex.Match(match.Value);
+                    if (!jsonData.Success)
+                        continue;
 
-                    if (dsId.Success && dsValues.Success)
+                    var data = JsonConvert.DeserializeObject<InitData>(jsonData.Groups[1].Value);
+
+                    if (data.IsError || string.IsNullOrEmpty(data.Key))
+                        continue;
+
+                    switch (data.Key)
                     {
-                        var key = dsId.Groups[1].Value;
-                        var gArr = dsValues.Groups[1].Value;
-                        var jToken = JsonConvert.DeserializeObject(gArr);
-
-                        switch (key)
+                        case "ds:3":
                         {
-                            case "ds:3":
+                            var jArr = (JArray)data.Data;
+                            var apps = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
+                            devInfo.AppIds = TryGetValues<string>(apps, 12, 0).ToArray();
+
+                            var more = TryGetValue<string>(jArr, 0, 1, 0, 0, 3, 4, 2);
+                            if (!string.IsNullOrEmpty(more) && more.StartsWith("/store/"))
                             {
-                                var jArr = (JArray)jToken;
-                                var apps = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
-                                devInfo.AppIds = TryGetValues<string>(apps, 12, 0).ToArray();
-
-                                var more = TryGetValue<string>(jArr, 0, 1, 0, 0, 3, 4, 2);
-                                if (!string.IsNullOrEmpty(more) && more.StartsWith("/store/"))
+                                var appIds = await TryGetNextPageAsync(more, token).ConfigureAwait(true);
+                                if (appIds.IsSuccess)
                                 {
-                                    var appIds = await TryGetNextPageAsync(more, token).ConfigureAwait(true);
-                                    if (appIds.IsSuccess)
-                                    {
-                                        appIds.Result.AddRange(devInfo.AppIds);
-                                        devInfo.AppIds = appIds.Result.Distinct().ToArray();
-                                    }
+                                    appIds.Result.AddRange(devInfo.AppIds);
+                                    devInfo.AppIds = appIds.Result.Distinct().ToArray();
                                 }
-
-                                break;
                             }
+
+                            break;
                         }
                     }
                 }
@@ -105,27 +104,26 @@ namespace AppMarketHelper.PlayGoogleCom
 
                 foreach (Match match in matches)
                 {
-                    var dsId = InitDataCallbackKeyRegex.Match(match.Value);
-                    var dsValues = InitDataCallbackValueRegex.Match(match.Value);
+                    var jsonData = InitDataRegex.Match(match.Value);
+                    if (!jsonData.Success)
+                        continue;
 
-                    if (dsId.Success && dsValues.Success)
+                    var data = JsonConvert.DeserializeObject<InitData>(jsonData.Groups[1].Value);
+
+                    if (data.IsError || string.IsNullOrEmpty(data.Key))
+                        continue;
+
+                    switch (data.Key)
                     {
-                        var key = dsId.Groups[1].Value;
-                        var gArr = dsValues.Groups[1].Value;
-                        var jToken = JsonConvert.DeserializeObject(gArr);
-
-                        switch (key)
+                        case "ds:3":
                         {
-                            case "ds:3":
-                            {
-                                var jArr = (JArray)jToken;
-                                var apps = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
-                                appIds = TryGetValues<string>(apps, 12, 0).ToList();
+                            var jArr = (JArray)data.Data;
+                            var apps = TryGetValue<JArray>(jArr, 0, 1, 0, 0, 0);
+                            appIds = TryGetValues<string>(apps, 12, 0).ToList();
 
-                                //TODO: KOA Pagination not supported :( Please add if know how
+                            //TODO: KOA Pagination not supported :( Please add if know how
 
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
